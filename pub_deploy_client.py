@@ -1,4 +1,4 @@
-import paramiko,os,pexpect,zipfile
+import paramiko,os,pexpect,zipfile,getpass
 homefolder=os.path.expanduser("~/")
 
 def addpub(local,server):
@@ -8,9 +8,10 @@ def addpub(local,server):
         ssh.connect(server['host'], int(server['port']),server['username'], server['password'])
         ssh.exec_command('unzip ~/pubkey.zip -d ~/pubkey/')
         ssh.exec_command('python ~/pubkey/pub_deploy_server.py')
-        ssh.exec_command('python ~/pubkey/pub_deploy_server.py')
-        #ssh.exec_command('rm -rf ~/pubkey/')
-        #ssh.exec_command('rm -f ~/pubkey.zip')
+        #ssh.exec_command('python ~/pubkey/pub_deploy_server.py')
+        ssh.exec_command('rm -f ~/pubkey.zip')        
+        ssh.exec_command('rm -rf ~/pubkey/')
+        os.system('rm -f ~/pubkey.zip')
         ssh.close()
         print 'Your public key has been added to server authorized_keys'
     except paramiko.SSHException, e:
@@ -51,44 +52,44 @@ def main():
     local={'known_host':os.path.expanduser("~/.ssh/known_hosts"),
            'compressfile':os.path.expanduser('~/pubkey.zip'),
            'publickey':'/home/fly/.ssh/id_dsa.pub'}
-    server={'host':"115.156.219.152",'port':'22','username':"fly",'password':"zhoushiwei"}
+    server={'host':"115.156.219.152",'port':'22','username':"root",'password':"AP@ssw0rd"}
     while True:
-        #while True:
-            #server['host']=raw_input('please input server ip:')
-            #if not server['host']:
-                #print 'You do not input ip,please reinput'
-                #continue     
-            #else:
-                #break
-        #while True:
-            #server['port']=raw_input('please input server ssh port(default for 22):')
-            #if not server['port']:
-                #server['port']='22'
-            #break
-        #while True:
-            #server['username']=raw_input('please input login username:')
-            #if not server['username']:
-                #print 'You do not input username,please reinput'
-                #continue     
-            #else:
-                #break        
-        #while True:
-            #server['password']=raw_input('please input login password:')
-            #if not server['password']:
-                #print 'You do not input password,please reinput'
-                #continue     
-            #else:
-                #break     
-        #while True:
-            #if local['publickey']:
-                #break
-            #else:
-                #local['publickey']=raw_input('please input where your public key is(absolute path):')
-                #if not local['publickey']:
-                    #print 'You do not input you public file,please reinput'
-                    #continue
-                #else:
-                    #break
+        while True:
+            server['host']=raw_input('please input server ip:')
+            if not server['host']:
+                print 'You do not input ip,please reinput'
+                continue     
+            else:
+                break
+        while True:
+            server['port']=raw_input('please input server ssh port(default for 22):')
+            if not server['port']:
+                server['port']='22'
+            break
+        while True:
+            server['username']=raw_input('please input login username:')
+            if not server['username']:
+                print 'You do not input username,please reinput'
+                continue     
+            else:
+                break        
+        while True:
+            server['password']=getpass.getpass('please input login password:')
+            if not server['password']:
+                print 'You do not input password,please reinput'
+                continue     
+            else:
+                break     
+        while True:
+            if local['publickey']:
+                break
+            else:
+                local['publickey']=raw_input('please input where your public key is(absolute path):')
+                if not local['publickey']:
+                    print 'You do not input you public file,please reinput'
+                    continue
+                else:
+                    break
         uploadpub(local,server)
         addpub(local,server)
         goon=raw_input("Do you have other server to deploy public key('y'or 'n'):")
