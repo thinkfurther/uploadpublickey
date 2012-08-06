@@ -51,7 +51,7 @@ def uploadpub(local,server):
 def main():
     local={'known_host':os.path.expanduser("~/.ssh/known_hosts"),
            'compressfile':os.path.expanduser('~/pubkey.zip'),
-           'publickey':'/home/fly/.ssh/id_dsa.pub'}
+           'publickey':''}
     server={'host':"115.156.219.152",'port':'22','username':"root",'password':"AP@ssw0rd"}
     while True:
         while True:
